@@ -3,46 +3,55 @@
     {
       "id": "116",
       "title": "Hara Hara Shankara Jaya Jaya Shankara",
+      "category": "Shiva",
       "file": "116_hara_hara_shankara_jaya_jaya_shankara.json"
     },
     {
       "id": "032",
       "title": "Bhatha Paribalan [A44]",
+      "category": "Ayyappan",
       "file": "032_bhatha_paribalan_a44json.json"
     },
     {
       "id": "033",
       "title": "Vanpuliyin Meethinile [Mama / Team][s21]",
+      "category": "Ayyappan",
       "file": "033_vanpuliyin_meethinile_mama.json"
     },
     {
       "id": "034",
       "title": "ACHANKOVIL ARASE PONNAYYAPPANE VA VA..",
+      "category": "Durga",
       "file": "034_achankovil_arase_ponnayyap.json"
     },
     {
       "id": "035",
       "title": "Enga Karuppa Swamy",
+      "category": "Murugan",
       "file": "035_enga_karuppa_swamyjson.json"
     },
     {
       "id": "036",
       "title": "Bhagavan Charanam",
+      "category": "Ganesha",
       "file": "036_bhagavan_charanamjson.json"
     },
     {
       "id": "037",
       "title": "Ponanane Dheivame ennalum engalai [A47] + mangala Snanam",
+      "category": "Shiva",
       "file": "037_ponanane_dheivame_ennalum_.json"
     },
     {
       "id": "038",
       "title": "Saranamappa Saranam ayya Swayie",
+      "category": "Durga",
       "file": "038_saranamappa_saranam_ayya_s.json"
     },
     {
       "id": "039",
       "title": "Irumudiye Thangi varu velayile",
+      "category": "Ganesha",
       "file": "039_irumudiye_thangi_varu_vela.json"
     }
   ]
