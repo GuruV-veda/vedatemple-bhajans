@@ -1,0 +1,147 @@
+{
+  "total_songs": 16,
+  "last_updated": "2026-03-01",
+  "deities": [
+    "Ayyappan",
+    "Ganesha",
+    "Hanuman",
+    "Krishna",
+    "Raghavendra",
+    "Rama",
+    "Shiva",
+    "Venkateswara",
+    "Devi",
+    "Guru",
+    "Unknown"
+  ],
+  "songs": [
+    {
+      "id": "bhaja_bhaja_manasa",
+      "title": "Bhaja Bhaja Manasa",
+      "deity": "Guru",
+      "language": "Hindi",
+      "audio": "/audio/bhaja_bhaja_manasa.mp3",
+      "file": "/songs/bhaja_bhaja_manasa.json"
+    },
+    {
+      "id": "ehtanai_kalamai_emgee_nindren",
+      "title": "Ehtanai Kalamai Emgee Nindren",
+      "deity": "Devi",
+      "language": "tamil",
+      "audio": "/audio/ehtanai_kalamai_emgee_nindren.mp3",
+      "file": "/songs/ehtanai_kalamai_emgee_nindren.json"
+    },
+    {
+      "id": "guru_krupa_anajana",
+      "title": "Guru Krupa Anajana",
+      "deity": "Guru",
+      "language": "Hindi",
+      "audio": "/audio/guru_krupa_anajana.mp3",
+      "file": "/songs/guru_krupa_anajana.json"
+    },
+    {
+      "id": "hara_hara_shankara_jaya_jaya_shankara",
+      "title": "Hara Hara Shankara Jaya Jaya Shankara",
+      "deity": "Shiva",
+      "language": "Sanskrit",
+      "audio": "/audio/hara_hara_shankara_jaya_jaya_shankara.mp3",
+      "file": "/songs/hara_hara_shankara_jaya_jaya_shankara.json"
+    },
+    {
+      "id": "jaga_janani_jagan_matha",
+      "title": "Jaga janani jagan matha",
+      "deity": "Devi",
+      "language": "Hindi",
+      "audio": "/audio/jaga_janani_jagan_matha.mp3",
+      "file": "/songs/jaga_janani_jagan_matha.json"
+    },
+    {
+      "id": "jana_margam_tharayao",
+      "title": "Jana Margam Tharayao",
+      "deity": "Shiva",
+      "language": "Tamil",
+      "audio": "/audio/jana_margam_tharayao.mp3",
+      "file": "/songs/jana_margam_tharayao.json"
+    },
+    {
+      "id": "jeya_jeya_devi_dhakalyakare",
+      "title": "Jeya jeya devi dhakalyakare",
+      "deity": "Devi",
+      "language": "Sanskrit",
+      "audio": "/audio/jeya_jeya_devi_dhakalyakare.mp3",
+      "file": "/songs/jeya_jeya_devi_dhakalyakare.json"
+    },
+    {
+      "id": "kanchi_managar_pogavenduma10",
+      "title": "Kanchi managar pogavendum[A10]",
+      "deity": "Guru",
+      "language": "Tamil",
+      "audio": "/audio/kanchi_managar_pogavenduma10.mp3",
+      "file": "/songs/kanchi_managar_pogavenduma10.json"
+    },
+    {
+      "id": "manthralaya_pura_mahan",
+      "title": "Manthralaya Pura Mahan",
+      "deity": "Raghavendra",
+      "language": "Tamil",
+      "audio": "/audio/manthralaya_pura_mahan.mp3",
+      "file": "/songs/manthralaya_pura_mahan.json"
+    },
+    {
+      "id": "nadamadum_deivan_nee_yallavo",
+      "title": "Nadamadum Deivan nee yallavo",
+      "deity": "Guru",
+      "language": "Tamil",
+      "audio": "/audio/nadamadum_deivan_nee_yallavo.mp3",
+      "file": "/songs/nadamadum_deivan_nee_yallavo.json"
+    },
+    {
+      "id": "punniyamana_padhukayam",
+      "title": "Punniyamana Padhukayam",
+      "deity": "Guru",
+      "language": "Tamil",
+      "audio": "/audio/punniyamana_padhukayam.mp3",
+      "file": "/songs/punniyamana_padhukayam.json"
+    },
+    {
+      "id": "roga_gharana_kripa_sakara",
+      "title": "Roga Gharana Kripa Sakara",
+      "deity": "Venkateswara",
+      "language": "Sanskrit",
+      "audio": "/audio/roga_gharana_kripa_sakara.mp3",
+      "file": "/songs/roga_gharana_kripa_sakara.json"
+    },
+    {
+      "id": "sharade_sharade",
+      "title": "Sharade Sharade",
+      "deity": "Devi",
+      "language": "Sanskrit",
+      "audio": "/audio/sharade_sharade.mp3",
+      "file": "/songs/sharade_sharade.json"
+    },
+    {
+      "id": "sivan_sir_padalkalale_geethanjali",
+      "title": "Sivan Sir – Padalkalale Geethanjali",
+      "deity": "Guru",
+      "language": "Tamil",
+      "audio": "/audio/sivan_sir_padalkalale_geethanjali.mp3",
+      "file": "/songs/sivan_sir_padalkalale_geethanjali.json"
+    },
+    {
+      "id": "sri_ragavendra_songs",
+      "title": "Sri Ragavendra SONGS",
+      "deity": "Raghavendra",
+      "language": "Tamil",
+      "audio": "/audio/sri_ragavendra_songs.mp3",
+      "file": "/songs/sri_ragavendra_songs.json"
+    },
+    {
+      "id": "thodashtakam",
+      "title": "Thodashtakam",
+      "deity": "Guru",
+      "language": "Tamil",
+      "audio": "/audio/thodashtakam.mp3",
+      "file": "/songs/thodashtakam.json"
+    }
+  ]
+}
