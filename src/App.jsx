@@ -1,49 +1,170 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 function App() {
-  const [songs, setSongs] = useState([]);
+  const [library, setLibrary] = useState([]);
+  const [deities, setDeities] = useState([]);
   const [selectedSong, setSelectedSong] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedDeity, setSelectedDeity] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetch("/bhajans/library.json")
-      .then(res => res.json())
-      .then(data => setSongs(data.songs));
+    fetch("/library.json")
+      .then((res) => res.json())
+      .then((data) => {
+        setLibrary(data.songs || []);
+        setDeities(data.deities || []);
+      })
+      .catch((err) => console.error("Error loading library:", err));
   }, []);
 
-  if (selectedSong) {
-    return <SongView song={selectedSong} goBack={() => setSelectedSong(null)} />;
-  }
+  const loadSong = async (slug) => {
+    try {
+      setLoading(true);
+      const res = await fetch(`/bhajans/songs/${slug}.json`);
+      const data = await res.json();
+      setSelectedSong(data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error loading song:", error);
+      setLoading(false);
+    }
+  };
+
+  const filteredSongs = library
+    .filter((song) =>
+      song.title.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .filter((song) =>
+      selectedDeity ? song.deity === selectedDeity : true
+    );
 
   return (
-    <div style={{ padding: 20 }}>
-      <h1>Veda Temple Bhajans</h1>
-      {songs.map(song => (
-        <div key={song.id} onClick={() => setSelectedSong(song)}>
-          {song.title}
+    <div style={styles.app}>
+      <h1 style={styles.header}>Veda Temple Bhajans</h1>
+
+      <div style={styles.container}>
+        {/* LEFT PANEL */}
+        <div style={styles.sidebar}>
+          <input
+            type="text"
+            placeholder="Search songs..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            style={styles.input}
+          />
+
+          <select
+            value={selectedDeity}
+            onChange={(e) => setSelectedDeity(e.target.value)}
+            style={styles.select}
+          >
+            <option value="">All Deities</option>
+            {deities.map((d) => (
+              <option key={d} value={d}>
+                {d}
+              </option>
+            ))}
+          </select>
+
+          <div style={styles.songList}>
+            {filteredSongs.map((song) => (
+              <div
+                key={song.id}
+                style={styles.songItem}
+                onClick={() => loadSong(song.id)}
+              >
+                <div>{song.title}</div>
+                <small style={{ color: "#888" }}>{song.deity}</small>
+              </div>
+            ))}
+          </div>
         </div>
-      ))}
+
+        {/* RIGHT PANEL */}
+        <div style={styles.content}>
+          {loading && <p>Loading song...</p>}
+
+          {!loading && selectedSong && (
+            <div>
+              <h2>{selectedSong.title}</h2>
+              <p><strong>Deity:</strong> {selectedSong.deity}</p>
+              <p><strong>Language:</strong> {selectedSong.language}</p>
+
+              {selectedSong.audio && (
+                <audio
+                  controls
+                  src={`/bhajans/audio/${selectedSong.id}.mp3`}
+                  style={{ margin: "15px 0", width: "100%" }}
+                />
+              )}
+
+              <div style={styles.lyrics}>
+                <pre>{selectedSong.lyrics}</pre>
+              </div>
+            </div>
+          )}
+
+          {!loading && !selectedSong && (
+            <p>Select a song to view details.</p>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
 
-function SongView({ song, goBack }) {
-  const [lyrics, setLyrics] = useState([]);
+/* ---------- Styles ---------- */
 
-  useEffect(() => {
-    fetch(`/bhajans/songs/${song.file}`)
-      .then(res => res.json())
-      .then(data => setLyrics(data.lyrics));
-  }, [song]);
-
-  return (
-    <div style={{ padding: 20 }}>
-      <button onClick={goBack}>Back</button>
-      <h2>{song.title}</h2>
-      {lyrics.map((line, index) => (
-        <div key={index}>{line}</div>
-      ))}
-    </div>
-  );
-}
+const styles = {
+  app: {
+    fontFamily: "Arial, sans-serif",
+    padding: "20px",
+  },
+  header: {
+    textAlign: "center",
+    marginBottom: "20px",
+  },
+  container: {
+    display: "flex",
+    gap: "20px",
+  },
+  sidebar: {
+    width: "30%",
+    minWidth: "250px",
+  },
+  content: {
+    width: "70%",
+  },
+  input: {
+    width: "100%",
+    padding: "8px",
+    marginBottom: "10px",
+  },
+  select: {
+    width: "100%",
+    padding: "8px",
+    marginBottom: "15px",
+  },
+  songList: {
+    maxHeight: "500px",
+    overflowY: "auto",
+    border: "1px solid #ddd",
+    padding: "10px",
+  },
+  songItem: {
+    padding: "8px",
+    borderBottom: "1px solid #eee",
+    cursor: "pointer",
+  },
+  lyrics: {
+    marginTop: "20px",
+    maxHeight: "400px",
+    overflowY: "auto",
+    background: "#f9f9f9",
+    padding: "15px",
+    whiteSpace: "pre-wrap",
+  },
+};
 
 export default App;
