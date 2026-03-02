@@ -161,7 +161,6 @@ const styles = {
     marginTop: "20px",
     maxHeight: "400px",
     overflowY: "auto",
-    background: "#f9f9f9",
     padding: "15px",
     whiteSpace: "pre-wrap",
   },
