@@ -8,6 +8,7 @@ function App() {
   const [selectedDeity, setSelectedDeity] = useState("");
   const [loading, setLoading] = useState(false);
   const [viewLanguage, setViewLanguage] = useState("Roman");
+  const [fontSize, setFontSize] = useState(20);
 
   useEffect(() => {
     fetch("/library.json")
@@ -25,7 +26,8 @@ function App() {
       const res = await fetch(`/bhajans/songs/${slug}.json`);
       const data = await res.json();
       setSelectedSong(data);
-      setViewLanguage("Roman"); // reset to default on new song
+      setViewLanguage("Roman");
+      setFontSize(20);
       setLoading(false);
     } catch (error) {
       console.error("Error loading song:", error);
@@ -90,7 +92,9 @@ function App() {
           {!loading && selectedSong && (
             <>
               <h2>{selectedSong.title}</h2>
-              <p><strong>Deity:</strong> {selectedSong.deity}</p>
+              <p>
+                <strong>Deity:</strong> {selectedSong.deity}
+              </p>
 
               {/* Audio */}
               {selectedSong.audio && (
@@ -101,7 +105,7 @@ function App() {
                 />
               )}
 
-              {/* Language Selector */}
+              {/* Language + Font Controls */}
               <div style={styles.languageBar}>
                 {Object.keys(selectedSong.lyrics).map((lang) => (
                   <button
@@ -118,11 +122,37 @@ function App() {
                     {lang}
                   </button>
                 ))}
+
+                <button
+                  onClick={() =>
+                    setFontSize((prev) => Math.max(prev - 2, 14))
+                  }
+                  style={styles.langButton}
+                >
+                  A-
+                </button>
+
+                <button
+                  onClick={() =>
+                    setFontSize((prev) => Math.min(prev + 2, 40))
+                  }
+                  style={styles.langButton}
+                >
+                  A+
+                </button>
               </div>
 
               {/* Lyrics */}
               <div style={styles.lyrics}>
-                <pre>{selectedSong.lyrics[viewLanguage]}</pre>
+                <pre
+                  style={{
+                    fontSize: `${fontSize}px`,
+                    margin: 0,
+                    whiteSpace: "pre-wrap",
+                  }}
+                >
+                  {selectedSong.lyrics[viewLanguage]}
+                </pre>
               </div>
             </>
           )}
@@ -195,9 +225,10 @@ const styles = {
     maxHeight: "400px",
     overflowY: "auto",
     background: "#5616f5",
-    padding: "15px",
-    whiteSpace: "pre-wrap",
-    borderRadius: "6px",
+    padding: "20px",
+    borderRadius: "10px",
+    color: "white",
+    lineHeight: "1.8",
   },
 };
 
