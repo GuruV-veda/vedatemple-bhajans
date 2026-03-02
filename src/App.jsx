@@ -194,7 +194,7 @@ const styles = {
   lyrics: {
     maxHeight: "400px",
     overflowY: "auto",
-    background: "#f9f9f9",
+    background: "#5616f5",
     padding: "15px",
     whiteSpace: "pre-wrap",
     borderRadius: "6px",
