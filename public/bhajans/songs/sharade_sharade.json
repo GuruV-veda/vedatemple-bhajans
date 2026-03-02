@@ -1,11 +1,17 @@
 {
   "id": "sharade_sharade",
   "title": "Sharade Sharade",
-  "language": "",
   "deity": "Unknown",
-  "lyrics": "Sharade sharade Veena Vani Shaarade (2)\nSharade sharade Pustaka Pani Shaarade (2)\nSharade sharade Manju Bhashini Shaarade (2)\nSharade sharade Mangala Dayini sharade (2)\n<<PAGE:204>>",
   "audio": "/audio/sharade_sharade.mp3",
-  "tags": [],
+  "lyrics": {
+    "Roman": "shAradE shAradE vINA vANI shAradE\nshAradE shAradE pustaka pANi shAradE\nshAradE shAradE manju bhASiNi shAradE\nshAradE shAradE maMgala dAyini shAradE",
+    "Tamil": "ஷாரதெ ஷாரதெ வீணா வாணீ ஷாரதெ\nஷாரதெ ஷாரதெ புஸ்தக பாணி ஷாரதெ\nஷாரதெ ஷாரதெ மந்ஜு பாSஇணி ஷாரதெ\nஷாரதெ ஷாரதெ மங்கல தாயிநி ஷாரதெ",
+    "Telugu": "శారదె శారదె వీణా వాణీ శారదె\nశారదె శారదె పుస్తక పాణి శారదె\nశారదె శారదె మన్జు భాSఇణి శారదె\nశారదె శారదె మంగల దాయిని శారదె",
+    "Kannada": "ಶಾರದೆ ಶಾರದೆ ವೀಣಾ ವಾಣೀ ಶಾರದೆ\nಶಾರದೆ ಶಾರದೆ ಪುಸ್ತಕ ಪಾಣಿ ಶಾರದೆ\nಶಾರದೆ ಶಾರದೆ ಮನ್ಜು ಭಾSಇಣಿ ಶಾರದೆ\nಶಾರದೆ ಶಾರದೆ ಮಂಗಲ ದಾಯಿನಿ ಶಾರದೆ",
+    "Devanagari": "शारदॆ शारदॆ वीणा वाणी शारदॆ\nशारदॆ शारदॆ पुस्तक पाणि शारदॆ\nशारदॆ शारदॆ मन्जु भाSइणि शारदॆ\nशारदॆ शारदॆ मंगल दायिनि शारदॆ",
+    "Malayalam": "ശാരദെ ശാരദെ വീണാ വാണീ ശാരദെ\nശാരദെ ശാരദെ പുസ്തക പാണി ശാരദെ\nശാരദെ ശാരദെ മൻജു ഭാSഇണി ശാരദെ\nശാരദെ ശാരദെ മംഗല ദായിനി ശാരദെ"
+  },
   "author": "",
-  "source": ""
+  "source": "",
+  "tags": []
 }

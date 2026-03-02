@@ -7,6 +7,7 @@ function App() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDeity, setSelectedDeity] = useState("");
   const [loading, setLoading] = useState(false);
+  const [viewLanguage, setViewLanguage] = useState("Roman");
 
   useEffect(() => {
     fetch("/library.json")
@@ -24,6 +25,7 @@ function App() {
       const res = await fetch(`/bhajans/songs/${slug}.json`);
       const data = await res.json();
       setSelectedSong(data);
+      setViewLanguage("Roman"); // reset to default on new song
       setLoading(false);
     } catch (error) {
       console.error("Error loading song:", error);
@@ -44,7 +46,7 @@ function App() {
       <h1 style={styles.header}>Veda Temple Bhajans</h1>
 
       <div style={styles.container}>
-        {/* LEFT PANEL */}
+        {/* Sidebar */}
         <div style={styles.sidebar}>
           <input
             type="text"
@@ -81,16 +83,16 @@ function App() {
           </div>
         </div>
 
-        {/* RIGHT PANEL */}
+        {/* Content */}
         <div style={styles.content}>
           {loading && <p>Loading song...</p>}
 
           {!loading && selectedSong && (
-            <div>
+            <>
               <h2>{selectedSong.title}</h2>
               <p><strong>Deity:</strong> {selectedSong.deity}</p>
-              <p><strong>Language:</strong> {selectedSong.language}</p>
 
+              {/* Audio */}
               {selectedSong.audio && (
                 <audio
                   controls
@@ -99,10 +101,30 @@ function App() {
                 />
               )}
 
-              <div style={styles.lyrics}>
-                <pre>{selectedSong.lyrics}</pre>
+              {/* Language Selector */}
+              <div style={styles.languageBar}>
+                {Object.keys(selectedSong.lyrics).map((lang) => (
+                  <button
+                    key={lang}
+                    onClick={() => setViewLanguage(lang)}
+                    style={{
+                      ...styles.langButton,
+                      backgroundColor:
+                        viewLanguage === lang ? "#444" : "#eee",
+                      color:
+                        viewLanguage === lang ? "#fff" : "#000",
+                    }}
+                  >
+                    {lang}
+                  </button>
+                ))}
               </div>
-            </div>
+
+              {/* Lyrics */}
+              <div style={styles.lyrics}>
+                <pre>{selectedSong.lyrics[viewLanguage]}</pre>
+              </div>
+            </>
           )}
 
           {!loading && !selectedSong && (
@@ -157,12 +179,25 @@ const styles = {
     borderBottom: "1px solid #eee",
     cursor: "pointer",
   },
+  languageBar: {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "8px",
+    margin: "15px 0",
+  },
+  langButton: {
+    padding: "6px 12px",
+    border: "none",
+    cursor: "pointer",
+    borderRadius: "4px",
+  },
   lyrics: {
-    marginTop: "20px",
     maxHeight: "400px",
     overflowY: "auto",
+    background: "#f9f9f9",
     padding: "15px",
     whiteSpace: "pre-wrap",
+    borderRadius: "6px",
   },
 };
 
