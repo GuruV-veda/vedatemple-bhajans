@@ -43,6 +43,7 @@ function App() {
     .filter((song) =>
       selectedDeity ? song.deity === selectedDeity : true
     );
+  
 
   return (
   <div style={styles.app}>
@@ -219,6 +220,7 @@ function App() {
     )}
   </div>
 );
+};
 
 /* ---------- Styles ---------- */
 
