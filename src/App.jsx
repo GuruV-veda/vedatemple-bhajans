@@ -233,16 +233,16 @@ const styles = {
     textAlign: "center",
     marginBottom: "20px",
   },
-  container: {
-    display: "flex",
-    gap: "20px",
-  },
+container: {
+  display: "flex",
+  gap: "20px",
+  flexWrap: "wrap",
+},
   sidebar: {
-    width: "30%",
-    minWidth: "250px",
+    flex : "1 1 200px",
   },
   content: {
-    width: "70%",
+    flex : "2 1 500px",
   },
   input: {
     width: "100%",
@@ -272,10 +272,11 @@ const styles = {
     margin: "15px 0",
   },
   langButton: {
-    padding: "6px 12px",
+    padding: "10px 16px",
     border: "none",
     cursor: "pointer",
-    borderRadius: "4px",
+    borderRadius: "20px",
+    fontSize: "14px",
   },
   lyrics: {
     maxHeight: "400px",
@@ -298,11 +299,18 @@ fullscreenContainer: {
   padding: "30px",
   overflowY: "auto",
   zIndex: 9999,
+  display: "flex",
+  flexDirection: "column",
 },
 
 fullscreenHeader: {
   display: "flex",
   justifyContent: "space-between",
+  position: "sticky",
+  top: 0,
+  backgroundColor: "#5616f5",
+  padding: "10px",
+  zIndex: 10
 },
 
 fullscreenButton: {
@@ -314,8 +322,9 @@ fullscreenButton: {
 },
 
 fullscreenLyrics: {
-  marginTop: "30px",
+  marginTop: "20px",
   lineHeight: "2",
+  fontWeight : "500",
 },
 
 };
