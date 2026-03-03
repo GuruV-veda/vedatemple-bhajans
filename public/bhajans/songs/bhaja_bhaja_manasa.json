@@ -1,11 +1,17 @@
 {
   "id": "bhaja_bhaja_manasa",
   "title": "Bhaja Bhaja Manasa",
-  "language": "",
   "deity": "Unknown",
-  "lyrics": "pallavi\nbhaja bhaja mAnasa rAghavEndram guru rAghavEndram yati rAghavEndram\nanupallavi\ntungA nadi tIram puNyasthaLa vAsam mantrAlaya kSEtram brndAvana\nvAsam\ncaraNam\ndIna jana priya gAnarasa pUrNam prahlAda avatAram kincita rUpam\nphAlguNa sangama guNashIla nAmam mrttika kaliyuga paramauSadam\nThunga Dheera viharam\npallavi\ntungA tIravirAjam bhajamana rAghavEndra yatirAjam\n(tungA)\ncaraNam 1\nmangaLakara mantrAlaya vAsam shrngArAnana vilasita hAsam\n(tungA)\ncaraNam 2\nkara dhrta daNDa kamaNDalu mAlam suruciracElam dhrtamaNi mAlam\n(tungA)\n<<PAGE:198>>\ncaraNam 3\nnirupama sundara kAya sushIlam vara kamalEshArayita nija sakalam\n(tungA)",
   "audio": "/audio/bhaja_bhaja_manasa.mp3",
-  "tags": [],
+  "lyrics": {
+    "Roman": "bhaja bhaja mAnasa rAghavendram \n guru rAghavendram \n Yati rAghavendram \n\n tungaa nadi teeram \n puNyastala vAsam ,\n manthrAlaya kshetram ,\n brundAvana vAsam.\n\n dheena jana priyam gAna rasa poorNam ,\n prahlAda avathAram chinchitha roopam, \n phAlguNa sangama gunashIla nAmam ,\n mruthika kaliyuga parama auShadham",
+    "Tamil": "பஜ பஜ மாநஸ ராகவேந்த்ரம் \n குரு ராகவேந்த்ரம் \n ஃயதி ராகவேந்த்ரம் \n\n துந்கா நதி தீரம் \n புண்யஸ்தல வாஸம் ,\n மந்த்ராலய க்ஷேத்ரம் ,\n ப்ருந்தாவந வாஸம்.\n\n தீந ஜந ப்ரியம் காந ரஸ பூர்ணம் ,\n ப்ரஹ்லாத அவதாரம் சிந்சித ரூபம், \n பால்குண ஸந்கம குநஷீல நாமம் ,\n ம்ருதிக கலியுக பரம ஔஷதம்",
+    "Telugu": "భజ భజ మానస రాఘవేంద్రం \n గురు రాఘవేంద్రం \n యతి రాఘవేంద్రం \n\n తున్గా నది తీరం \n పుణ్యస్తల వాసం ,\n మంథ్రాలయ క్శేత్రం ,\n బ్రుందావన వాసం.\n\n ధీన జన ప్రియం గాన రస పూర్ణం ,\n ప్రహ్లాద అవథారం చిన్చిథ రూపం, \n ఫాల్గుణ సన్గమ గునశీల నామం ,\n మ్రుథిక కలియుగ పరమ ఔషధం",
+    "Kannada": "ಭಜ ಭಜ ಮಾನಸ ರಾಘವೇಂದ್ರಂ \n ಗುರು ರಾಘವೇಂದ್ರಂ \n ಯ಼ತಿ ರಾಘವೇಂದ್ರಂ \n\n ತುನ್ಗಾ ನದಿ ತೀರಂ \n ಪುಣ್ಯಸ್ತಲ ವಾಸಂ ,\n ಮಂಥ್ರಾಲಯ ಕ್ಶೇತ್ರಂ ,\n ಬ್ರುಂದಾವನ ವಾಸಂ.\n\n ಧೀನ ಜನ ಪ್ರಿಯಂ ಗಾನ ರಸ ಪೂರ್ಣಂ ,\n ಪ್ರಹ್ಲಾದ ಅವಥಾರಂ ಚಿನ್ಚಿಥ ರೂಪಂ, \n ಫಾಲ್ಗುಣ ಸನ್ಗಮ ಗುನಶೀಲ ನಾಮಂ ,\n ಮ್ರುಥಿಕ ಕಲಿಯುಗ ಪರಮ ಔಷಧಂ",
+    "Devanagari": "भज भज मानस राघवेन्द्रम् \n गुरु राघवेन्द्रम् \n य़ति राघवेन्द्रम् \n\n तुन्गा नदि तीरम् \n पुण्यस्तल वासम् ,\n मन्थ्रालय क्शेत्रम् ,\n ब्रुन्दावन वासम्।\n\n धीन जन प्रियम् गान रस पूर्णम् ,\n प्रह्लाद अवथारम् चिन्चिथ रूपम्, \n फाल्गुण सन्गम गुनशील नामम् ,\n म्रुथिक कलियुग परम औषधम्",
+    "Malayalam": "ഭജ ഭജ മാനസ രാഘവേന്ദ്രം \n ഗുരു രാഘവേന്ദ്രം \n യതി രാഘവേന്ദ്രം \n\n തുൻഗാ നദി തീരം \n പുണ്യസ്തല വാസം ,\n മന്ഥ്രാലയ ക്ശേത്രം ,\n ബ്രുന്ദാവന വാസം.\n\n ധീന ജന പ്രിയം ഗാന രസ പൂർണം ,\n പ്രഹ്ലാദ അവഥാരം ചിൻചിഥ രൂപം, \n ഫാൽഗുണ സൻഗമ ഗുനശീല നാമം ,\n മ്രുഥിക കലിയുഗ പരമ ഔഷധം"
+  },
   "author": "",
-  "source": ""
+  "source": "",
+  "tags": []
 }
