@@ -12,6 +12,7 @@
     "Venkateswara",
     "Devi",
     "Guru",
+    "Murugan",
     "Unknown"
   ],
   "songs": [
@@ -56,12 +57,12 @@
       "file": "/songs/sharade_sharade.json"
     },
     {
-      "id": "prabho_ganapathe",
-      "title": "Prabho Ganapathe",
-      "deity": "Ganesha",
+      "id": "nada_vindu",
+      "title": "Nada vindu Kaladhi",
+      "deity": "Murugan",
       "language": "Tamil",
-      "audio": "/audio/sprabho_ganapathe.mp3",
-      "file": "/songs/prabho_ganapathe.json"
+      "audio": "/audio/nada_vindu.mp3",
+      "file": "/songs/nada_vindu.json"
     }
   ]
 }
