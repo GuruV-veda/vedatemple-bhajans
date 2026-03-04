@@ -1,5 +1,5 @@
 {
-  "total_songs": 6,
+  "total_songs": 7,
   "last_updated": "2026-03-01",
   "deities": [
     "Ayyappan",
@@ -55,6 +55,15 @@
       "language": "Sanskrit",
       "audio": "/audio/sharade_sharade.mp3",
       "file": "/songs/sharade_sharade.json"
+    },
+    
+    {
+      "id": "prabho_ganapathe",
+      "title": "Prabho Ganapathe",
+      "deity": "Ganesha",
+      "language": "Tamil",
+      "audio": "/audio/prabho_ganapathe.mp3",
+      "file": "/songs/prabho_ganapathe.json"
     },
     {
       "id": "nada_vindu",
