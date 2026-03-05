@@ -1,5 +1,5 @@
 {
-  "total_songs": 7,
+  "total_songs": 8,
   "last_updated": "2026-03-01",
   "deities": [
     "Ayyappan",
@@ -72,6 +72,14 @@
       "language": "Tamil",
       "audio": "/audio/nada_vindu.mp3",
       "file": "/songs/nada_vindu.json"
+    },
+    {
+      "id": "harihara_tanaya",
+      "title": "Harihara Tanaya Deva",
+      "deity": "Ayyappan",
+      "language": "Malayalam",
+      "audio": "/audio/harihara_tanaya.mp3",
+      "file": "/songs/harihara_tanaya.json"
     }
   ]
 }
