@@ -1,24 +1,37 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { supabase } from "./supabase";
 
 function App() {
+
   const [songs, setSongs] = useState([]);
   const [deities, setDeities] = useState([]);
+  const [tags, setTags] = useState([]);
+  const [playlists, setPlaylists] = useState([]);
+
   const [selectedSong, setSelectedSong] = useState(null);
+
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDeity, setSelectedDeity] = useState("");
+  const [selectedTag, setSelectedTag] = useState("");
+  const [selectedPlaylist, setSelectedPlaylist] = useState("");
+
   const [loading, setLoading] = useState(false);
+
   const [viewLanguage, setViewLanguage] = useState("Roman");
   const [fontSize, setFontSize] = useState(20);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
-  /* ---------------- Load Songs From Supabase ---------------- */
+  const audioRef = useRef(null);
+
+  /* ---------------- Load Initial Data ---------------- */
 
   useEffect(() => {
     fetchSongs();
+    fetchPlaylists();
   }, []);
 
   const fetchSongs = async () => {
+
     setLoading(true);
 
     const { data, error } = await supabase
@@ -34,16 +47,74 @@ function App() {
 
     setSongs(data || []);
 
-    /* Extract unique deities */
-    const uniqueDeities = [...new Set((data || []).map((s) => s.deity))];
+    /* Extract Deities */
+
+    const uniqueDeities = [
+      ...new Set((data || []).map((s) => s.deity).filter(Boolean)),
+    ];
+
     setDeities(uniqueDeities);
 
+    /* Extract Tags */
+
+    const allTags = (data || []).flatMap((s) => s.tags || []);
+    const uniqueTags = [...new Set(allTags)];
+
+    setTags(uniqueTags);
+
+    setLoading(false);
+  };
+
+  const fetchPlaylists = async () => {
+
+    const { data, error } = await supabase
+      .from("playlists")
+      .select("*")
+      .order("name");
+
+    if (error) {
+      console.error("Error loading playlists:", error);
+      return;
+    }
+
+    setPlaylists(data || []);
+  };
+
+  /* ---------------- Playlist Loader ---------------- */
+
+  const loadPlaylist = async (playlistId) => {
+
+    setSelectedPlaylist(playlistId);
+
+    if (!playlistId) {
+      fetchSongs();
+      return;
+    }
+
+    setLoading(true);
+
+    const { data, error } = await supabase
+      .from("playlist_songs")
+      .select("songs(*)")
+      .eq("playlist_id", playlistId)
+      .order("position");
+
+    if (error) {
+      console.error("Playlist load error:", error);
+      setLoading(false);
+      return;
+    }
+
+    const playlistSongs = data.map((row) => row.songs);
+
+    setSongs(playlistSongs);
     setLoading(false);
   };
 
   /* ---------------- Select Song ---------------- */
 
   const loadSong = (song) => {
+
     setSelectedSong(song);
     setViewLanguage("Roman");
     setFontSize(20);
@@ -59,6 +130,9 @@ function App() {
     )
     .filter((song) =>
       selectedDeity ? song.deity === selectedDeity : true
+    )
+    .filter((song) =>
+      selectedTag ? song.tags?.includes(selectedTag) : true
     );
 
   /* ---------------- UI ---------------- */
@@ -123,6 +197,8 @@ function App() {
 
             <div style={styles.sidebar}>
 
+              {/* Search */}
+
               <input
                 type="text"
                 placeholder="Search songs..."
@@ -130,6 +206,8 @@ function App() {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 style={styles.input}
               />
+
+              {/* Deity */}
 
               <select
                 value={selectedDeity}
@@ -139,11 +217,41 @@ function App() {
                 <option value="">All Deities</option>
 
                 {deities.map((d) => (
-                  <option key={d} value={d}>
-                    {d}
+                  <option key={d}>{d}</option>
+                ))}
+              </select>
+
+              {/* Tags */}
+
+              <select
+                value={selectedTag}
+                onChange={(e) => setSelectedTag(e.target.value)}
+                style={styles.select}
+              >
+                <option value="">All Tags</option>
+
+                {tags.map((tag) => (
+                  <option key={tag}>{tag}</option>
+                ))}
+              </select>
+
+              {/* Playlists */}
+
+              <select
+                value={selectedPlaylist}
+                onChange={(e) => loadPlaylist(e.target.value)}
+                style={styles.select}
+              >
+                <option value="">All Songs</option>
+
+                {playlists.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.name}
                   </option>
                 ))}
               </select>
+
+              {/* Song List */}
 
               <div style={styles.songList}>
 
@@ -181,6 +289,7 @@ function App() {
 
                   {selectedSong.audio_url && (
                     <audio
+                      ref={audioRef}
                       controls
                       src={selectedSong.audio_url}
                       style={{
@@ -268,10 +377,7 @@ function App() {
 /* ---------------- Styles ---------------- */
 
 const styles = {
-  app: {
-    fontFamily: "Arial",
-    padding: "20px",
-  },
+  app: { fontFamily: "Arial", padding: "20px" },
 
   header: {
     textAlign: "center",
@@ -284,13 +390,9 @@ const styles = {
     flexWrap: "wrap",
   },
 
-  sidebar: {
-    flex: "1 1 220px",
-  },
+  sidebar: { flex: "1 1 220px" },
 
-  content: {
-    flex: "2 1 500px",
-  },
+  content: { flex: "2 1 500px" },
 
   input: {
     width: "100%",
@@ -301,7 +403,7 @@ const styles = {
   select: {
     width: "100%",
     padding: "8px",
-    marginBottom: "15px",
+    marginBottom: "10px",
   },
 
   songList: {
