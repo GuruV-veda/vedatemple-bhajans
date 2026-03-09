@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
+import { supabase } from "./supabaseClient";
 
 function App() {
-  const [library, setLibrary] = useState([]);
+  const [songs, setSongs] = useState([]);
   const [deities, setDeities] = useState([]);
   const [selectedSong, setSelectedSong] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -11,273 +12,325 @@ function App() {
   const [fontSize, setFontSize] = useState(20);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
+  /* ---------------- Load Songs From Supabase ---------------- */
+
   useEffect(() => {
-    fetch("/library.json")
-      .then((res) => res.json())
-      .then((data) => {
-        setLibrary(data.songs || []);
-        setDeities(data.deities || []);
-      })
-      .catch((err) => console.error("Error loading library:", err));
+    fetchSongs();
   }, []);
 
-  const loadSong = async (slug) => {
-    try {
-      setLoading(true);
-      const res = await fetch(`/bhajans/songs/${slug}.json`);
-      const data = await res.json();
-      setSelectedSong(data);
-      setViewLanguage("Roman");
-      setFontSize(20);
+  const fetchSongs = async () => {
+    setLoading(true);
+
+    const { data, error } = await supabase
+      .from("songs")
+      .select("*")
+      .order("title");
+
+    if (error) {
+      console.error("Error loading songs:", error);
       setLoading(false);
-    } catch (error) {
-      console.error("Error loading song:", error);
-      setLoading(false);
+      return;
     }
+
+    setSongs(data || []);
+
+    /* Extract unique deities */
+    const uniqueDeities = [...new Set((data || []).map((s) => s.deity))];
+    setDeities(uniqueDeities);
+
+    setLoading(false);
   };
 
-  const filteredSongs = library
+  /* ---------------- Select Song ---------------- */
+
+  const loadSong = (song) => {
+    setSelectedSong(song);
+    setViewLanguage("Roman");
+    setFontSize(20);
+  };
+
+  /* ---------------- Filtering ---------------- */
+
+  const filteredSongs = songs
     .filter((song) =>
-      song.title.toLowerCase().includes(searchTerm.toLowerCase())
+      (song.title || "")
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase())
     )
     .filter((song) =>
       selectedDeity ? song.deity === selectedDeity : true
     );
-  
+
+  /* ---------------- UI ---------------- */
 
   return (
-  <div style={styles.app}>
+    <div style={styles.app}>
 
-    {/* FULLSCREEN MODE */}
-    {isFullscreen && selectedSong && (
-      <div style={styles.fullscreenContainer}>
+      {/* FULLSCREEN MODE */}
 
-        <div style={styles.fullscreenHeader}>
-          <button
-            onClick={() => setIsFullscreen(false)}
-            style={styles.fullscreenButton}
-          >
-            Exit Fullscreen
-          </button>
+      {isFullscreen && selectedSong && (
+        <div style={styles.fullscreenContainer}>
 
-          <button
-            onClick={() => {
-              setIsFullscreen(false);
-              setSelectedSong(null);
-            }}
-            style={styles.fullscreenButton}
-          >
-            Home
-          </button>
-        </div>
+          <div style={styles.fullscreenHeader}>
 
-        <h2 style={{ marginTop: "20px" }}>
-          {selectedSong.title}
-        </h2>
-
-        <div style={styles.fullscreenLyrics}>
-          <pre
-            style={{
-              fontSize: `${fontSize + 6}px`,
-              margin: 0,
-              whiteSpace: "pre-wrap"
-            }}
-          >
-            {selectedSong.lyrics[viewLanguage]}
-          </pre>
-        </div>
-      </div>
-    )}
-
-    {/* NORMAL MODE */}
-    {!isFullscreen && (
-      <>
-        <h1 style={styles.header}>Veda Temple Bhajans</h1>
-
-        <div style={styles.container}>
-          {/* Sidebar */}
-          <div style={styles.sidebar}>
-            <input
-              type="text"
-              placeholder="Search songs..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              style={styles.input}
-            />
-
-            <select
-              value={selectedDeity}
-              onChange={(e) => setSelectedDeity(e.target.value)}
-              style={styles.select}
+            <button
+              onClick={() => setIsFullscreen(false)}
+              style={styles.fullscreenButton}
             >
-              <option value="">All Deities</option>
-              {deities.map((d) => (
-                <option key={d} value={d}>
-                  {d}
-                </option>
-              ))}
-            </select>
+              Exit Fullscreen
+            </button>
 
-            <div style={styles.songList}>
-              {filteredSongs.map((song) => (
-                <div
-                  key={song.id}
-                  style={styles.songItem}
-                  onClick={() => loadSong(song.id)}
-                >
-                  <div>{song.title}</div>
-                  <small style={{ color: "#888" }}>
-                    {song.deity}
-                  </small>
-                </div>
-              ))}
-            </div>
+            <button
+              onClick={() => {
+                setIsFullscreen(false);
+                setSelectedSong(null);
+              }}
+              style={styles.fullscreenButton}
+            >
+              Home
+            </button>
+
           </div>
 
-          {/* Content */}
-          <div style={styles.content}>
-            {loading && <p>Loading song...</p>}
+          <h2 style={{ marginTop: "20px" }}>
+            {selectedSong.title}
+          </h2>
 
-            {!loading && selectedSong && (
-              <>
-                <h2>{selectedSong.title}</h2>
-                <p>
-                  <strong>Deity:</strong> {selectedSong.deity}
-                </p>
+          <div style={styles.fullscreenLyrics}>
+            <pre
+              style={{
+                fontSize: `${fontSize + 6}px`,
+                whiteSpace: "pre-wrap",
+              }}
+            >
+              {selectedSong.lyrics?.[viewLanguage] ||
+                "Lyrics not available"}
+            </pre>
+          </div>
 
-                {selectedSong.audio && (
-                  <audio
-                    controls
-                    src={`/bhajans/audio/${selectedSong.id}.mp3`}
-                    style={{ margin: "15px 0", width: "100%" }}
-                  />
-                )}
+        </div>
+      )}
 
-                {/* Controls */}
-                <div style={styles.languageBar}>
-                  <button
-                    onClick={() => setIsFullscreen(true)}
-                    style={styles.langButton}
+      {/* NORMAL MODE */}
+
+      {!isFullscreen && (
+        <>
+          <h1 style={styles.header}>Veda Temple Bhajans</h1>
+
+          <div style={styles.container}>
+
+            {/* Sidebar */}
+
+            <div style={styles.sidebar}>
+
+              <input
+                type="text"
+                placeholder="Search songs..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                style={styles.input}
+              />
+
+              <select
+                value={selectedDeity}
+                onChange={(e) => setSelectedDeity(e.target.value)}
+                style={styles.select}
+              >
+                <option value="">All Deities</option>
+
+                {deities.map((d) => (
+                  <option key={d} value={d}>
+                    {d}
+                  </option>
+                ))}
+              </select>
+
+              <div style={styles.songList}>
+
+                {filteredSongs.map((song) => (
+                  <div
+                    key={song.id}
+                    style={styles.songItem}
+                    onClick={() => loadSong(song)}
                   >
-                    Fullscreen
-                  </button>
+                    <div>{song.title}</div>
 
-                  {Object.keys(selectedSong.lyrics).map((lang) => (
-                    <button
-                      key={lang}
-                      onClick={() => setViewLanguage(lang)}
+                    <small style={{ color: "#888" }}>
+                      {song.deity}
+                    </small>
+                  </div>
+                ))}
+
+              </div>
+
+            </div>
+
+            {/* Content */}
+
+            <div style={styles.content}>
+
+              {loading && <p>Loading songs...</p>}
+
+              {!loading && selectedSong && (
+                <>
+                  <h2>{selectedSong.title}</h2>
+
+                  <p>
+                    <strong>Deity:</strong> {selectedSong.deity}
+                  </p>
+
+                  {selectedSong.audio_url && (
+                    <audio
+                      controls
+                      src={selectedSong.audio_url}
                       style={{
-                        ...styles.langButton,
-                        backgroundColor:
-                          viewLanguage === lang ? "#444" : "#eee",
-                        color:
-                          viewLanguage === lang ? "#fff" : "#000",
+                        margin: "15px 0",
+                        width: "100%",
+                      }}
+                    />
+                  )}
+
+                  {/* Controls */}
+
+                  <div style={styles.languageBar}>
+
+                    <button
+                      onClick={() => setIsFullscreen(true)}
+                      style={styles.langButton}
+                    >
+                      Fullscreen
+                    </button>
+
+                    {Object.keys(selectedSong.lyrics || {}).map((lang) => (
+                      <button
+                        key={lang}
+                        onClick={() => setViewLanguage(lang)}
+                        style={{
+                          ...styles.langButton,
+                          backgroundColor:
+                            viewLanguage === lang ? "#444" : "#eee",
+                          color:
+                            viewLanguage === lang ? "#fff" : "#000",
+                        }}
+                      >
+                        {lang}
+                      </button>
+                    ))}
+
+                    <button
+                      onClick={() =>
+                        setFontSize((prev) => Math.max(prev - 2, 14))
+                      }
+                      style={styles.langButton}
+                    >
+                      A-
+                    </button>
+
+                    <button
+                      onClick={() =>
+                        setFontSize((prev) => Math.min(prev + 2, 40))
+                      }
+                      style={styles.langButton}
+                    >
+                      A+
+                    </button>
+
+                  </div>
+
+                  <div style={styles.lyrics}>
+                    <pre
+                      style={{
+                        fontSize: `${fontSize}px`,
+                        whiteSpace: "pre-wrap",
                       }}
                     >
-                      {lang}
-                    </button>
-                  ))}
+                      {selectedSong.lyrics?.[viewLanguage] ||
+                        "Lyrics not available"}
+                    </pre>
+                  </div>
 
-                  <button
-                    onClick={() =>
-                      setFontSize((prev) => Math.max(prev - 2, 14))
-                    }
-                    style={styles.langButton}
-                  >
-                    A-
-                  </button>
+                </>
+              )}
 
-                  <button
-                    onClick={() =>
-                      setFontSize((prev) => Math.min(prev + 2, 40))
-                    }
-                    style={styles.langButton}
-                  >
-                    A+
-                  </button>
-                </div>
+              {!loading && !selectedSong && (
+                <p>Select a song to view details.</p>
+              )}
 
-                <div style={styles.lyrics}>
-                  <pre
-                    style={{
-                      fontSize: `${fontSize}px`,
-                      margin: 0,
-                      whiteSpace: "pre-wrap",
-                    }}
-                  >
-                    {selectedSong.lyrics[viewLanguage]}
-                  </pre>
-                </div>
-              </>
-            )}
+            </div>
 
-            {!loading && !selectedSong && (
-              <p>Select a song to view details.</p>
-            )}
           </div>
-        </div>
-      </>
-    )}
-  </div>
-);
-};
+        </>
+      )}
+    </div>
+  );
+}
 
-/* ---------- Styles ---------- */
+/* ---------------- Styles ---------------- */
 
 const styles = {
   app: {
-    fontFamily: "Arial, sans-serif",
+    fontFamily: "Arial",
     padding: "20px",
   },
+
   header: {
     textAlign: "center",
     marginBottom: "20px",
   },
-container: {
-  display: "flex",
-  gap: "20px",
-  flexWrap: "wrap",
-},
+
+  container: {
+    display: "flex",
+    gap: "20px",
+    flexWrap: "wrap",
+  },
+
   sidebar: {
-    flex : "1 1 200px",
+    flex: "1 1 220px",
   },
+
   content: {
-    flex : "2 1 500px",
+    flex: "2 1 500px",
   },
+
   input: {
     width: "100%",
     padding: "8px",
     marginBottom: "10px",
   },
+
   select: {
     width: "100%",
     padding: "8px",
     marginBottom: "15px",
   },
+
   songList: {
     maxHeight: "500px",
     overflowY: "auto",
     border: "1px solid #ddd",
     padding: "10px",
   },
+
   songItem: {
     padding: "8px",
     borderBottom: "1px solid #eee",
     cursor: "pointer",
   },
+
   languageBar: {
     display: "flex",
     flexWrap: "wrap",
     gap: "8px",
     margin: "15px 0",
   },
+
   langButton: {
     padding: "10px 16px",
     border: "none",
     cursor: "pointer",
     borderRadius: "20px",
-    fontSize: "14px",
   },
+
   lyrics: {
     maxHeight: "400px",
     overflowY: "auto",
@@ -288,45 +341,32 @@ container: {
     lineHeight: "1.8",
   },
 
-fullscreenContainer: {
-  position: "fixed",
-  top: 0,
-  left: 0,
-  width: "100vw",
-  height: "100vh",
-  backgroundColor: "#5616f5",
-  color: "white",
-  padding: "30px",
-  overflowY: "auto",
-  zIndex: 9999,
-  display: "flex",
-  flexDirection: "column",
-},
+  fullscreenContainer: {
+    position: "fixed",
+    inset: 0,
+    backgroundColor: "#5616f5",
+    color: "white",
+    padding: "30px",
+    overflowY: "auto",
+    zIndex: 9999,
+  },
 
-fullscreenHeader: {
-  display: "flex",
-  justifyContent: "space-between",
-  position: "sticky",
-  top: 0,
-  backgroundColor: "#5616f5",
-  padding: "10px",
-  zIndex: 10
-},
+  fullscreenHeader: {
+    display: "flex",
+    justifyContent: "space-between",
+  },
 
-fullscreenButton: {
-  padding: "10px 20px",
-  borderRadius: "8px",
-  border: "none",
-  cursor: "pointer",
-  fontWeight: "bold"
-},
+  fullscreenButton: {
+    padding: "10px 20px",
+    borderRadius: "8px",
+    border: "none",
+    cursor: "pointer",
+  },
 
-fullscreenLyrics: {
-  marginTop: "20px",
-  lineHeight: "2",
-  fontWeight : "500",
-},
-
+  fullscreenLyrics: {
+    marginTop: "20px",
+    lineHeight: "2",
+  },
 };
 
 export default App;
