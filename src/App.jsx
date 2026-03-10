@@ -25,15 +25,41 @@ function App() {
 
   /* ---------------- Load Initial Data ---------------- */
 
-  useEffect(() => {
-    fetchSongs();
-    fetchPlaylists();
-  }, []);
+ useEffect(() => {
+  let isMounted = true;
+  const loadInitialData = async () => {
+    await fetchSongs();
+    await fetchPlaylists();
+    await fetchDeities(); 
+  };
+
+  loadInitialData();
+
+  return () => {
+    isMounted = false;
+  };
+}, []);
+
+  const fetchDeities = async () => {
+  const { data, error } = await supabase
+    .from("deities")
+    .select("id, name")
+    .order("name");
+
+  if (error) {
+    console.error("Error loading deities:", error);
+    return;
+  }
+
+  if (!data) return;
+  console.log("Deities loaded:", data);
+  setDeities(data);
+};
+
+
 
   const fetchSongs = async () => {
-
     setLoading(true);
-
     const { data, error } = await supabase
       .from("songs")
       .select("*")
@@ -45,21 +71,28 @@ function App() {
       return;
     }
 
+    if (!data) return;
+    console.log("Songs from DB:", data);
     setSongs(data || []);
+    
 
     /* Extract Deities */
 /* Testing with this comment */
     const uniqueDeities = [
       ...new Set((data || []).map((s) => s.deity).filter(Boolean)),
     ];
-
     setDeities(uniqueDeities);
-
     /* Extract Tags */
 
-    const allTags = (data || []).flatMap((s) => s.tags || []);
-    const uniqueTags = [...new Set(allTags)];
+  const allTags = (data || []).flatMap((s) => {
+    if (!s.tags) return [];
 
+    if (Array.isArray(s.tags)) return s.tags;
+      return s.tags.split(",").map((t) => t.trim());
+    });
+
+  const uniqueTags = [...new Set(allTags)];
+  setTags(uniqueTags);
     setTags(uniqueTags);
 
     setLoading(false);
@@ -129,7 +162,7 @@ function App() {
         .includes(searchTerm.toLowerCase())
     )
     .filter((song) =>
-      selectedDeity ? song.deity === selectedDeity : true
+      selectedDeity ? song.deity_id === selectedDeity : true
     )
     .filter((song) =>
       selectedTag ? song.tags?.includes(selectedTag) : true
@@ -215,11 +248,12 @@ function App() {
                 style={styles.select}
               >
                 <option value="">All Deities</option>
-
                 {deities.map((d) => (
-                  <option key={d}>{d}</option>
+                <option key={d.id} value={d.id}>
+                {d.name}
+                </option>
                 ))}
-              </select>
+               </select>
 
               {/* Tags */}
 
@@ -284,14 +318,14 @@ function App() {
                   <h2>{selectedSong.title}</h2>
 
                   <p>
-                    <strong>Deity:</strong> {selectedSong.deity}
+                    <strong>Deity:</strong> {selectedSong.deities?.name}
                   </p>
 
-                  {selectedSong.audio_url && (
+                  {selectedSong.audio && (
                     <audio
                       ref={audioRef}
                       controls
-                      src={selectedSong.audio_url}
+                      src={selectedSong.audio}
                       style={{
                         margin: "15px 0",
                         width: "100%",
