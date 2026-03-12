@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from "react";
 import { supabase } from "./supabase";
 
 function App() {
-
   const [songs, setSongs] = useState([]);
   const [deities, setDeities] = useState([]);
   const [tags, setTags] = useState([]);
@@ -14,99 +13,86 @@ function App() {
   const [selectedDeity, setSelectedDeity] = useState("");
   const [selectedTag, setSelectedTag] = useState("");
   const [selectedPlaylist, setSelectedPlaylist] = useState("");
+  const [audioSrc, setAudioSrc] = useState("");
 
   const [loading, setLoading] = useState(false);
 
-  const [viewLanguage, setViewLanguage] = useState("Roman");
+  const [viewLanguage, setViewLanguage] = useState("roman");
   const [fontSize, setFontSize] = useState(20);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   const audioRef = useRef(null);
 
+
   /* ---------------- Load Initial Data ---------------- */
 
- useEffect(() => {
-  let isMounted = true;
-  const loadInitialData = async () => {
-    await fetchSongs();
-    await fetchPlaylists();
-    await fetchDeities(); 
-  };
+  useEffect(() => {
+    fetchSongs();
+    fetchPlaylists();
+    fetchDeities();
+  }, []);
 
-  loadInitialData();
-
-  return () => {
-    isMounted = false;
-  };
-}, []);
+  /* ---------------- Fetch Deities ---------------- */
 
   const fetchDeities = async () => {
-  const { data, error } = await supabase
-    .from("deities")
-    .select("id, name")
-    .order("name");
+    const { data, error } = await supabase
+      .from("deities")
+      .select("id,name")
+      .order("name");
 
-  if (error) {
-    console.error("Error loading deities:", error);
-    return;
-  }
+    if (error) {
+      console.error(error);
+      return;
+    }
 
-  if (!data) return;
-  console.log("Deities loaded:", data);
-  setDeities(data);
-};
+    setDeities(data || []);
+  };
 
-
+  /* ---------------- Fetch Songs ---------------- */
 
   const fetchSongs = async () => {
     setLoading(true);
+
     const { data, error } = await supabase
       .from("songs")
-      .select("*")
+      .select("*,deities(name)")
       .order("title");
 
     if (error) {
-      console.error("Error loading songs:", error);
+      console.error(error);
       setLoading(false);
       return;
     }
 
-    if (!data) return;
-    console.log("Songs from DB:", data);
     setSongs(data || []);
-    
 
-    /* Extract Deities */
-/* Testing with this comment */
-    const uniqueDeities = [
-      ...new Set((data || []).map((s) => s.deity).filter(Boolean)),
-    ];
-    setDeities(uniqueDeities);
     /* Extract Tags */
 
-  const allTags = (data || []).flatMap((s) => {
-    if (!s.tags) return [];
+    const allTags = (data || []).flatMap((s) => {
+      if (!s.tags) return [];
 
-    if (Array.isArray(s.tags)) return s.tags;
+      if (Array.isArray(s.tags)) return s.tags;
+
       return s.tags.split(",").map((t) => t.trim());
     });
 
-  const uniqueTags = [...new Set(allTags)];
-  setTags(uniqueTags);
+    const uniqueTags = [...new Set(allTags)];
+
     setTags(uniqueTags);
 
     setLoading(false);
   };
 
-  const fetchPlaylists = async () => {
+  /* ---------------- Fetch Playlists ---------------- */
 
+  const fetchPlaylists = async () => {
     const { data, error } = await supabase
       .from("playlists")
       .select("*")
       .order("name");
 
     if (error) {
-      console.error("Error loading playlists:", error);
+      console.error(error);
       return;
     }
 
@@ -116,7 +102,6 @@ function App() {
   /* ---------------- Playlist Loader ---------------- */
 
   const loadPlaylist = async (playlistId) => {
-
     setSelectedPlaylist(playlistId);
 
     if (!playlistId) {
@@ -133,7 +118,7 @@ function App() {
       .order("position");
 
     if (error) {
-      console.error("Playlist load error:", error);
+      console.error(error);
       setLoading(false);
       return;
     }
@@ -141,45 +126,77 @@ function App() {
     const playlistSongs = data.map((row) => row.songs);
 
     setSongs(playlistSongs);
+
     setLoading(false);
   };
 
   /* ---------------- Select Song ---------------- */
 
   const loadSong = (song) => {
-
     setSelectedSong(song);
-    setViewLanguage("Roman");
+
+    /* default language */
+
+    if (song?.lyrics?.roman) {
+      setViewLanguage("roman");
+    } else {
+      const firstLang = Object.keys(song.lyrics || {})[0];
+      setViewLanguage(firstLang || "roman");
+    }
+
     setFontSize(20);
+
+    setAudioSrc(song.audio || "");
+
+    /* load audio without resetting player 
+   
+    if (audioRef.current && song.audio) {
+      audioRef.current.src = song.audio;
+    }
+      */
   };
 
   /* ---------------- Filtering ---------------- */
 
   const filteredSongs = songs
     .filter((song) =>
-      (song.title || "")
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase())
+      (song.title || "").toLowerCase().includes(searchTerm.toLowerCase())
     )
+    .filter((song) => (selectedDeity ? song.deity_id === selectedDeity : true))
     .filter((song) =>
-      selectedDeity ? song.deity_id === selectedDeity : true
-    )
-    .filter((song) =>
-      selectedTag ? song.tags?.includes(selectedTag) : true
+      selectedTag
+        ? song.tags?.includes(selectedTag) ||
+          song.tags?.split(",").includes(selectedTag)
+        : true
     );
+
+   const AudioPlayer = () => {
+    if (!selectedSong?.audio) return null;
+
+    return (
+      <audio
+        ref={audioRef}
+        controls
+         src={audioSrc}
+        style={{
+          width: "100%",
+          margin: "10px 0 20px 0",
+        }}
+      />
+    );
+  };
+
 
   /* ---------------- UI ---------------- */
 
   return (
     <div style={styles.app}>
-
+      
       {/* FULLSCREEN MODE */}
 
       {isFullscreen && selectedSong && (
         <div style={styles.fullscreenContainer}>
-
           <div style={styles.fullscreenHeader}>
-
             <button
               onClick={() => setIsFullscreen(false)}
               style={styles.fullscreenButton}
@@ -196,13 +213,10 @@ function App() {
             >
               Home
             </button>
-
           </div>
 
-          <h2 style={{ marginTop: "20px" }}>
-            {selectedSong.title}
-          </h2>
-
+          <h2>{selectedSong.title}</h2>
+          <AudioPlayer />
           <div style={styles.fullscreenLyrics}>
             <pre
               style={{
@@ -210,11 +224,9 @@ function App() {
                 whiteSpace: "pre-wrap",
               }}
             >
-              {selectedSong.lyrics?.[viewLanguage] ||
-                "Lyrics not available"}
+              {selectedSong.lyrics?.[viewLanguage] || "Lyrics not available"}
             </pre>
           </div>
-
         </div>
       )}
 
@@ -225,13 +237,9 @@ function App() {
           <h1 style={styles.header}>Veda Temple Bhajans</h1>
 
           <div style={styles.container}>
-
             {/* Sidebar */}
 
             <div style={styles.sidebar}>
-
-              {/* Search */}
-
               <input
                 type="text"
                 placeholder="Search songs..."
@@ -248,12 +256,13 @@ function App() {
                 style={styles.select}
               >
                 <option value="">All Deities</option>
+
                 {deities.map((d) => (
-                <option key={d.id} value={d.id}>
-                {d.name}
-                </option>
+                  <option key={d.id} value={d.id}>
+                    {d.name}
+                  </option>
                 ))}
-               </select>
+              </select>
 
               {/* Tags */}
 
@@ -288,7 +297,6 @@ function App() {
               {/* Song List */}
 
               <div style={styles.songList}>
-
                 {filteredSongs.map((song) => (
                   <div
                     key={song.id}
@@ -298,19 +306,16 @@ function App() {
                     <div>{song.title}</div>
 
                     <small style={{ color: "#888" }}>
-                      {song.deity}
+                      {song.deities?.name}
                     </small>
                   </div>
                 ))}
-
               </div>
-
             </div>
 
             {/* Content */}
 
             <div style={styles.content}>
-
               {loading && <p>Loading songs...</p>}
 
               {!loading && selectedSong && (
@@ -321,28 +326,19 @@ function App() {
                     <strong>Deity:</strong> {selectedSong.deities?.name}
                   </p>
 
-                  {selectedSong.audio && (
-                    <audio
-                      ref={audioRef}
-                      controls
-                      src={selectedSong.audio}
-                      style={{
-                        margin: "15px 0",
-                        width: "100%",
-                      }}
-                    />
-                  )}
-
                   {/* Controls */}
 
-                  <div style={styles.languageBar}>
+                  <AudioPlayer />
 
+                  <div style={styles.languageBar}>
                     <button
                       onClick={() => setIsFullscreen(true)}
                       style={styles.langButton}
                     >
                       Fullscreen
                     </button>
+
+
 
                     {Object.keys(selectedSong.lyrics || {}).map((lang) => (
                       <button
@@ -352,8 +348,7 @@ function App() {
                           ...styles.langButton,
                           backgroundColor:
                             viewLanguage === lang ? "#444" : "#eee",
-                          color:
-                            viewLanguage === lang ? "#fff" : "#000",
+                          color: viewLanguage === lang ? "#fff" : "#000",
                         }}
                       >
                         {lang}
@@ -377,7 +372,6 @@ function App() {
                     >
                       A+
                     </button>
-
                   </div>
 
                   <div style={styles.lyrics}>
@@ -391,16 +385,11 @@ function App() {
                         "Lyrics not available"}
                     </pre>
                   </div>
-
                 </>
               )}
 
-              {!loading && !selectedSong && (
-                <p>Select a song to view details.</p>
-              )}
-
+              {!loading && !selectedSong && <p>Select a song to view details.</p>}
             </div>
-
           </div>
         </>
       )}
@@ -413,32 +402,17 @@ function App() {
 const styles = {
   app: { fontFamily: "Arial", padding: "20px" },
 
-  header: {
-    textAlign: "center",
-    marginBottom: "20px",
-  },
+  header: { textAlign: "center", marginBottom: "20px" },
 
-  container: {
-    display: "flex",
-    gap: "20px",
-    flexWrap: "wrap",
-  },
+  container: { display: "flex", gap: "20px", flexWrap: "wrap" },
 
   sidebar: { flex: "1 1 220px" },
 
   content: { flex: "2 1 500px" },
 
-  input: {
-    width: "100%",
-    padding: "8px",
-    marginBottom: "10px",
-  },
+  input: { width: "100%", padding: "8px", marginBottom: "10px" },
 
-  select: {
-    width: "100%",
-    padding: "8px",
-    marginBottom: "10px",
-  },
+  select: { width: "100%", padding: "8px", marginBottom: "10px" },
 
   songList: {
     maxHeight: "500px",
@@ -499,10 +473,7 @@ const styles = {
     cursor: "pointer",
   },
 
-  fullscreenLyrics: {
-    marginTop: "20px",
-    lineHeight: "2",
-  },
+  fullscreenLyrics: { marginTop: "20px", lineHeight: "2" },
 };
 
 export default App;
