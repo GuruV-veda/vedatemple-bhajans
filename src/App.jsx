@@ -1,20 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
-
 import { supabase } from "./supabase";
 
 function App() {
 
 const containerRef = useRef(null);
+const audioRef = useRef(null);
 
 const [songs, setSongs] = useState([]);
-  const song = {
-    title: "Sample Bhajan",
-    lyrics: `Line 1 of the bhajan
-Line 2 of the bhajan
-Line 3 of the bhajan`,
-    audio: "/audio/sample.mp3"
-  };
-
 const [deities, setDeities] = useState([]);
 const [tags, setTags] = useState([]);
 const [playlists, setPlaylists] = useState([]);
@@ -31,11 +23,8 @@ const [loading, setLoading] = useState(false);
 const [viewLanguage, setViewLanguage] = useState("roman");
 const [fontSize, setFontSize] = useState(24);
 const [isFullscreen, setIsFullscreen] = useState(false);
-  
 
 const [audioSrc, setAudioSrc] = useState("");
-
-const audioRef = useRef(null);
 
 const langShort = {
 roman: "RO",
@@ -46,7 +35,7 @@ malayalam: "ML",
 devanagari: "HI"
 };
 
-/* ---------------- Load Initial Data ---------------- */
+/* Load Initial Data */
 
 useEffect(() => {
 fetchSongs();
@@ -54,7 +43,7 @@ fetchDeities();
 fetchPlaylists();
 }, []);
 
-/* ---------------- Fetch Deities ---------------- */
+/* Fetch Deities */
 
 const fetchDeities = async () => {
 const { data } = await supabase
@@ -62,150 +51,92 @@ const { data } = await supabase
 .select("id,name")
 .order("name");
 
-
 setDeities(data || []);
-
-
 };
 
-/* ---------------- Fetch Songs ---------------- */
+/* Fetch Songs */
 
 const fetchSongs = async () => {
-
 
 setLoading(true);
 
 const { data } = await supabase
-  .from("songs")
-  .select("*,deities(name)")
-  .order("title");
+.from("songs")
+.select("*,deities(name)")
+.order("title");
 
 setSongs(data || []);
 
 const allTags = (data || []).flatMap((s) => {
-  if (!s.tags) return [];
-  if (Array.isArray(s.tags)) return s.tags;
-  return s.tags.split(",").map((t) => t.trim());
+if (!s.tags) return [];
+if (Array.isArray(s.tags)) return s.tags;
+return s.tags.split(",").map((t) => t.trim());
 });
 
 const uniqueTags = [...new Set(allTags)];
 
 setTags(uniqueTags);
-
 setLoading(false);
-
-
 };
 
-/* ---------------- Fetch Playlists ---------------- */
+/* Fetch Playlists */
 
 const fetchPlaylists = async () => {
 
-
 const { data } = await supabase
-  .from("playlists")
-  .select("*")
-  .order("name");
+.from("playlists")
+.select("*")
+.order("name");
 
 setPlaylists(data || []);
-
-
 };
 
-/* ---------------- Playlist Loader ---------------- */
+/* Playlist Loader */
 
 const loadPlaylist = async (playlistId) => {
-
 
 setSelectedPlaylist(playlistId);
 
 if (!playlistId) {
-  fetchSongs();
-  return;
+fetchSongs();
+return;
 }
 
 setLoading(true);
 
 const { data } = await supabase
-  .from("playlist_songs")
-  .select("songs(*)")
-  .eq("playlist_id", playlistId)
-  .order("position");
+.from("playlist_songs")
+.select("songs(*)")
+.eq("playlist_id", playlistId)
+.order("position");
 
 const playlistSongs = data.map((row) => row.songs);
 
 setSongs(playlistSongs);
-
 setLoading(false);
-
-
 };
 
-/* ---------------- Select Song ---------------- */
+/* Select Song */
 
 const loadSong = (song) => {
-
 
 setSelectedSong(song);
 
 if (song?.lyrics?.roman) {
-  setViewLanguage("roman");
+setViewLanguage("roman");
 } else {
-  const firstLang = Object.keys(song.lyrics || {})[0];
-  setViewLanguage(firstLang || "roman");
+const firstLang = Object.keys(song.lyrics || {})[0];
+setViewLanguage(firstLang || "roman");
 }
 
 setFontSize(24);
 
 if (song.audio !== audioSrc) {
-  setAudioSrc(song.audio || "");
+setAudioSrc(song.audio || "");
 }
-
-
 };
 
-
- // FULLSCREEN TOGGLE
-  const toggleFullscreen = () => {
-
-    const elem = containerRef.current;
-
-    if (!document.fullscreenElement) {
-
-      if (elem.requestFullscreen) {
-        elem.requestFullscreen();
-      } else if (elem.webkitRequestFullscreen) {
-        elem.webkitRequestFullscreen();
-      } else if (elem.msRequestFullscreen) {
-        elem.msRequestFullscreen();
-      }
-
-    } else {
-
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      }
-
-    }
-  };
-
-// Detect exit from fullscreen
-  useEffect(() => {
-
-    const handler = () => {
-      setIsFullscreen(!!document.fullscreenElement);
-    };
-
-    document.addEventListener("fullscreenchange", handler);
-
-    return () => {
-      document.removeEventListener("fullscreenchange", handler);
-    };
-
-  }, []);
-
-
-/* ---------------- Next / Previous ---------------- */
+/* Next / Previous */
 
 const nextSong = () => {
 const index = songs.findIndex((s) => s.id === selectedSong.id);
@@ -219,13 +150,11 @@ const prev = songs[index - 1];
 if (prev) loadSong(prev);
 };
 
-/* ---------------- Filtering ---------------- */
+/* Filtering */
 
 const filteredSongs = songs
 .filter((song) =>
-(song.title || "")
-.toLowerCase()
-.includes(searchTerm.toLowerCase())
+(song.title || "").toLowerCase().includes(searchTerm.toLowerCase())
 )
 .filter((song) =>
 selectedDeity ? song.deity_id === selectedDeity : true
@@ -234,234 +163,257 @@ selectedDeity ? song.deity_id === selectedDeity : true
 selectedTag ? song.tags?.includes(selectedTag) : true
 );
 
-/* ---------------- UI ---------------- */
+/* UI */
 
-return ( <div ref={containerRef} style={styles.app}>
+return (
 
-  <h1 style={styles.header}>Veda Temple Bhajans</h1>
+<div ref={containerRef} style={styles.app}>
 
-  <div style={isFullscreen ? styles.containerFullscreen : styles.container}>
+<h1 style={styles.header}>Veda Temple Bhajans</h1>
 
-    {/* Sidebar */}
+<div style={isFullscreen ? styles.containerFullscreen : styles.container}>
+
+{/* Sidebar */}
 
 {!isFullscreen && (
-  <div style={styles.sidebar}>
-    
 
-      <input
-        type="text"
-        placeholder="Search songs..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        style={styles.input}
-      />
+<div style={styles.sidebar}>
 
-      <div style={styles.filterBar}>
+<input
+type="text"
+placeholder="Search songs..."
+value={searchTerm}
+onChange={(e) => setSearchTerm(e.target.value)}
+style={styles.input}
+/>
 
-        <select
-          value={selectedDeity}
-          onChange={(e) => setSelectedDeity(e.target.value)}
-          style={styles.select}
-        >
-          <option value="">Deity</option>
+<div style={styles.filterBar}>
 
-          {deities.map((d) => (
-            <option key={d.id} value={d.id}>
-              {d.name}
-            </option>
-          ))}
+<select
+value={selectedDeity}
+onChange={(e) => setSelectedDeity(e.target.value)}
+style={styles.select}
 
-        </select>
-
-        <select
-          value={selectedTag}
-          onChange={(e) => setSelectedTag(e.target.value)}
-          style={styles.select}
-        >
-          <option value="">Tags</option>
-
-          {tags.map((tag) => (
-            <option key={tag}>{tag}</option>
-          ))}
-
-        </select>
-
-      </div>
-
-      <select
-        value={selectedPlaylist}
-        onChange={(e) => loadPlaylist(e.target.value)}
-        style={styles.select}
-      >
-        <option value="">Playlist</option>
-
-        {playlists.map((p) => (
-          <option key={p.id} value={p.id}>
-            {p.name}
-          </option>
-        ))}
-
-      </select>
-
-      <div style={styles.songList}>
-
-        {filteredSongs.map((song) => (
-
-          <div
-            key={song.id}
-            style={styles.songItem}
-            onClick={() => loadSong(song)}
-          >
-
-            <div>{song.title}</div>
-
-            <small style={{ color: "#888" }}>
-              {song.deities?.name}
-            </small>
-
-          </div>
-
-        ))}
-
-      </div>
-
-    </div>
-)} 
-/* Closing isFullScreen started at line 248 */
-
-    {/* Content */}
-
-    <div style={styles.content}>
-
-      {loading && <p>Loading songs...</p>}
-
-      {!loading && selectedSong && (
-
-        <>
-
-          <h2>{selectedSong.title}</h2>
-
-          <p>
-            <strong>Deity:</strong> {selectedSong.deities?.name}
-          </p>
-
-          <div style={styles.languageBar}>
-
-           <button
-  onClick={() => setIsFullscreen(!isFullscreen)}
-  style={styles.langButton}
 >
-  {isFullscreen ? "Exit Full" : "Full"}
-</button>
 
-            {Object.keys(selectedSong.lyrics || {}).map((lang) => (
+<option value="">Deity</option>
 
-              <button
-                key={lang}
-                onClick={() => setViewLanguage(lang)}
-                style={{
-                  ...styles.langButton,
-                  backgroundColor:
-                    viewLanguage === lang ? "#444" : "#eee",
-                  color:
-                    viewLanguage === lang ? "#fff" : "#000",
-                }}
-              >
+{deities.map((d) => (
 
-                {langShort[lang] || lang}
+<option key={d.id} value={d.id}>
+{d.name}
+</option>
+))}
 
-              </button>
+</select>
 
-            ))}
+<select
+value={selectedTag}
+onChange={(e) => setSelectedTag(e.target.value)}
+style={styles.select}
 
-            <button
-              onClick={() =>
-                setFontSize((prev) => Math.max(prev - 2, 16))
-              }
-              style={styles.langButton}
-            >
-              A-
-            </button>
+>
 
-            <button
-              onClick={() =>
-                setFontSize((prev) => Math.min(prev + 2, 40))
-              }
-              style={styles.langButton}
-            >
-              A+
-            </button>
+<option value="">Tags</option>
 
-          </div>
+{tags.map((tag) => (
 
-          <div style={styles.lyrics}>
+<option key={tag}>{tag}</option>
+))}
 
-            <pre
-              style={{
-                fontSize: `${fontSize}px`,
-                whiteSpace: "pre-wrap",
-              }}
-            >
-
-              {selectedSong.lyrics?.[viewLanguage] ||
-                "Lyrics not available"}
-
-            </pre>
-
-          </div>
-
-          <div style={styles.songNav}>
-
-            <button onClick={prevSong} style={styles.navButton}>
-              Previous
-            </button>
-
-            <button onClick={nextSong} style={styles.navButton}>
-              Next
-            </button>
-
-          </div>
-
-        </>
-
-      )}
-
-      {!loading && !selectedSong && (
-        <p>Select a song to view details.</p>
-      )}
-
-    </div>
-
-
-  </div>
-
-  {/* Sticky Audio Player */}
-
-  {audioSrc && (
-
-    <div style={styles.audioBar}>
-
-      <div style={{ fontWeight: "bold", marginBottom: "5px" }}>
-        {selectedSong?.title}
-      </div>
-
-      <audio
-        ref={audioRef}
-        controls
-        src={audioSrc}
-        style={{ width: "100%" }}
-      />
-
-    </div>
-)
-}
+</select>
 
 </div>
-)
 
+<select
+value={selectedPlaylist}
+onChange={(e) => loadPlaylist(e.target.value)}
+style={styles.select}
 
+>
 
-/* ---------------- Styles ---------------- */
+<option value="">Playlist</option>
+
+{playlists.map((p) => (
+
+<option key={p.id} value={p.id}>
+{p.name}
+</option>
+))}
+
+</select>
+
+<div style={styles.songList}>
+
+{filteredSongs.map((song) => (
+
+<div
+key={song.id}
+style={styles.songItem}
+onClick={() => loadSong(song)}
+>
+
+<div>{song.title}</div>
+
+<small style={{ color: "#888" }}>
+{song.deities?.name} </small>
+
+</div>
+
+))}
+
+</div>
+
+</div>
+
+)}
+
+{/* Content */}
+
+<div style={styles.content}>
+
+{loading && <p>Loading songs...</p>}
+
+{!loading && selectedSong && (
+
+<>
+
+<h2>{selectedSong.title}</h2>
+
+<p>
+<strong>Deity:</strong> {selectedSong.deities?.name}
+</p>
+
+<div style={styles.languageBar}>
+
+<button
+onClick={() => setIsFullscreen(!isFullscreen)}
+style={styles.langButton}
+
+>
+
+{isFullscreen ? "Exit Full" : "Full"} </button>
+
+{Object.keys(selectedSong.lyrics || {}).map((lang) => (
+
+<button
+key={lang}
+onClick={() => setViewLanguage(lang)}
+style={{
+...styles.langButton,
+backgroundColor:
+viewLanguage === lang ? "#444" : "#eee",
+color:
+viewLanguage === lang ? "#fff" : "#000"
+}}
+
+>
+
+{langShort[lang] || lang}
+
+</button>
+
+))}
+
+<button
+onClick={() =>
+setFontSize((prev) => Math.max(prev - 2, 16))
+}
+style={styles.langButton}
+
+>
+
+A- </button>
+
+<button
+onClick={() =>
+setFontSize((prev) => Math.min(prev + 2, 40))
+}
+style={styles.langButton}
+
+>
+
+A+ </button>
+
+</div>
+
+<div
+style={{
+...styles.lyrics,
+maxHeight: isFullscreen ? "80vh" : "50vh"
+}}
+>
+
+<pre
+style={{
+fontSize: isFullscreen ? "42px" : `${fontSize}px`,
+whiteSpace: "pre-wrap"
+}}
+>
+
+{selectedSong.lyrics?.[viewLanguage] ||
+"Lyrics not available"}
+
+</pre>
+
+</div>
+
+{!isFullscreen && (
+
+<div style={styles.songNav}>
+
+<button onClick={prevSong} style={styles.navButton}>
+Previous
+</button>
+
+<button onClick={nextSong} style={styles.navButton}>
+Next
+</button>
+
+</div>
+
+)}
+
+</>
+
+)}
+
+{!loading && !selectedSong && (
+
+<p>Select a song to view details.</p>
+)}
+
+</div>
+
+</div>
+
+{/* Sticky Audio Player */}
+
+{audioSrc && (
+
+<div style={styles.audioBar}>
+
+<div style={{ fontWeight: "bold", marginBottom: "5px" }}>
+{selectedSong?.title}
+</div>
+
+<audio
+ref={audioRef}
+controls
+src={audioSrc}
+style={{ width: "100%" }}
+/>
+
+</div>
+
+)}
+
+</div>
+
+);
+}
+
+/* Styles */
 
 const styles = {
 
@@ -480,6 +432,10 @@ container: {
 display: "flex",
 flexDirection: "column",
 gap: "15px"
+},
+
+containerFullscreen: {
+display: "block"
 },
 
 sidebar: {},
@@ -537,7 +493,6 @@ padding: "20px",
 borderRadius: "10px",
 color: "white",
 lineHeight: "1.8",
-maxHeight: isFullscreen ? "80vh" : "50vh",
 overflowY: "auto"
 },
 
