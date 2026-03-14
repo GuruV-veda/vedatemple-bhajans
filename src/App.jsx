@@ -236,8 +236,7 @@ selectedTag ? song.tags?.includes(selectedTag) : true
 
 /* ---------------- UI ---------------- */
 
-return ( <div style={styles.app}>
-
+return ( <div ref={containerRef} style={styles.app}>
 
   <h1 style={styles.header}>Veda Temple Bhajans</h1>
 
@@ -344,12 +343,12 @@ return ( <div style={styles.app}>
 
           <div style={styles.languageBar}>
 
-            <button
-              onClick={() => setIsFullscreen(true)}
-              style={styles.langButton}
-            >
-              Full
-            </button>
+           <button
+  onClick={toggleFullscreen}
+  style={styles.langButton}
+>
+  {isFullscreen ? "Exit" : "Full"}
+</button>
 
             {Object.keys(selectedSong.lyrics || {}).map((lang) => (
 
@@ -452,49 +451,7 @@ return ( <div style={styles.app}>
 
   )}
 
-<div
-      ref={containerRef}
-      style={{
-        padding: "16px",
-        fontFamily: "sans-serif",
-        maxWidth: "800px",
-        margin: "auto"
-      }}
-    >
 
-      {/* Header */}
-      <h2>{song.title}</h2>
-
-      {/* Buttons */}
-      <div style={{ marginBottom: "10px" }}>
-        <button onClick={toggleFullscreen}>
-          {isFullscreen ? "Exit Full" : "Full"}
-        </button>
-      </div>
-
-      {/* Audio Player */}
-      <div style={{ marginBottom: "16px" }}>
-        <audio
-          ref={audioRef}
-          controls
-          src={song.audio}
-          style={{ width: "100%" }}
-        />
-      </div>
-
-      {/* Lyrics */}
-      <div
-        style={{
-          whiteSpace: "pre-line",
-          fontSize: isFullscreen ? "28px" : "18px",
-          lineHeight: "1.7",
-          paddingBottom: "50px"
-        }}
-      >
-        {song.lyrics}
-      </div>
-
-    </div>
   
 
 </div>
