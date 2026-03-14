@@ -535,7 +535,7 @@ padding: "20px",
 borderRadius: "10px",
 color: "white",
 lineHeight: "1.8",
-maxHeight: "50vh",
+maxHeight: isFullscreen ? "80vh" : "50vh",
 overflowY: "auto"
 },
 
