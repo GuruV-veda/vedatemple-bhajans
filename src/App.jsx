@@ -240,11 +240,13 @@ return ( <div ref={containerRef} style={styles.app}>
 
   <h1 style={styles.header}>Veda Temple Bhajans</h1>
 
-  <div style={styles.container}>
+  <div style={isFullscreen ? styles.containerFullscreen : styles.container}>
 
     {/* Sidebar */}
 
-    <div style={styles.sidebar}>
+{!isFullscreen && (
+  <div style={styles.sidebar}>
+    
 
       <input
         type="text"
@@ -324,7 +326,7 @@ return ( <div ref={containerRef} style={styles.app}>
       </div>
 
     </div>
-
+)} 
     {/* Content */}
 
     <div style={styles.content}>
@@ -344,10 +346,10 @@ return ( <div ref={containerRef} style={styles.app}>
           <div style={styles.languageBar}>
 
            <button
-  onClick={toggleFullscreen}
+  onClick={() => setIsFullscreen(!isFullscreen)}
   style={styles.langButton}
 >
-  {isFullscreen ? "Exit" : "Full"}
+  {isFullscreen ? "Exit Full" : "Full"}
 </button>
 
             {Object.keys(selectedSong.lyrics || {}).map((lang) => (
@@ -428,6 +430,7 @@ return ( <div ref={containerRef} style={styles.app}>
 
     </div>
 
+
   </div>
 
   {/* Sticky Audio Player */}
@@ -449,7 +452,7 @@ return ( <div ref={containerRef} style={styles.app}>
 
     </div>
 
-  )}
+  
 
 
   
