@@ -327,6 +327,8 @@ return ( <div ref={containerRef} style={styles.app}>
 
     </div>
 )} 
+/* Closing isFullScreen started at line 248 */
+
     {/* Content */}
 
     <div style={styles.content}>
@@ -451,16 +453,13 @@ return ( <div ref={containerRef} style={styles.app}>
       />
 
     </div>
-
-  
-
-
-  
+)
+}
 
 </div>
+)
 
-);
-}
+
 
 /* ---------------- Styles ---------------- */
 
