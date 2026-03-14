@@ -287,12 +287,14 @@ onClick={() => loadSong(song)}
 <div style={styles.languageBar}>
 
 <button
-onClick={() => setIsFullscreen(!isFullscreen)}
-style={styles.langButton}
-
+  onClick={() => {
+    setIsFullscreen(!isFullscreen);
+    if (!isFullscreen) setFontSize(42);
+  }}
+  style={styles.langButton}
 >
-
-{isFullscreen ? "Exit Full" : "Full"} </button>
+  {isFullscreen ? "Exit Full" : "Full"}
+</button>
 
 {Object.keys(selectedSong.lyrics || {}).map((lang) => (
 
@@ -345,10 +347,11 @@ maxHeight: isFullscreen ? "80vh" : "50vh"
 >
 
 <pre
-style={{
-fontSize: isFullscreen ? "42px" : `${fontSize}px`,
-whiteSpace: "pre-wrap"
-}}
+  style={{
+    fontSize: `${fontSize}px`,
+    whiteSpace: "pre-wrap",
+    lineHeight: isFullscreen ? "2.2" : "1.8"
+  }}
 >
 
 {selectedSong.lyrics?.[viewLanguage] ||
