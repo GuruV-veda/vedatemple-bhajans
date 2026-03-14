@@ -50,9 +50,9 @@ const { data } = await supabase
 .select("id,name")
 .order("name");
 
-```
+
 setDeities(data || []);
-```
+
 
 };
 
@@ -60,7 +60,7 @@ setDeities(data || []);
 
 const fetchSongs = async () => {
 
-```
+
 setLoading(true);
 
 const { data } = await supabase
@@ -81,7 +81,7 @@ const uniqueTags = [...new Set(allTags)];
 setTags(uniqueTags);
 
 setLoading(false);
-```
+
 
 };
 
@@ -89,14 +89,14 @@ setLoading(false);
 
 const fetchPlaylists = async () => {
 
-```
+
 const { data } = await supabase
   .from("playlists")
   .select("*")
   .order("name");
 
 setPlaylists(data || []);
-```
+
 
 };
 
@@ -104,7 +104,7 @@ setPlaylists(data || []);
 
 const loadPlaylist = async (playlistId) => {
 
-```
+
 setSelectedPlaylist(playlistId);
 
 if (!playlistId) {
@@ -125,7 +125,7 @@ const playlistSongs = data.map((row) => row.songs);
 setSongs(playlistSongs);
 
 setLoading(false);
-```
+
 
 };
 
@@ -133,7 +133,7 @@ setLoading(false);
 
 const loadSong = (song) => {
 
-```
+
 setSelectedSong(song);
 
 if (song?.lyrics?.roman) {
@@ -148,7 +148,7 @@ setFontSize(24);
 if (song.audio !== audioSrc) {
   setAudioSrc(song.audio || "");
 }
-```
+
 
 };
 
@@ -185,7 +185,7 @@ selectedTag ? song.tags?.includes(selectedTag) : true
 
 return ( <div style={styles.app}>
 
-```
+
   <h1 style={styles.header}>Veda Temple Bhajans</h1>
 
   <div style={styles.container}>
@@ -400,7 +400,7 @@ return ( <div style={styles.app}>
   )}
 
 </div>
-```
+
 
 );
 }
