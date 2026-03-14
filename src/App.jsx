@@ -1,9 +1,20 @@
 import React, { useEffect, useState, useRef } from "react";
+
 import { supabase } from "./supabase";
 
 function App() {
 
+const containerRef = useRef(null);
+
 const [songs, setSongs] = useState([]);
+  const song = {
+    title: "Sample Bhajan",
+    lyrics: `Line 1 of the bhajan
+Line 2 of the bhajan
+Line 3 of the bhajan`,
+    audio: "/audio/sample.mp3"
+  };
+
 const [deities, setDeities] = useState([]);
 const [tags, setTags] = useState([]);
 const [playlists, setPlaylists] = useState([]);
@@ -20,6 +31,7 @@ const [loading, setLoading] = useState(false);
 const [viewLanguage, setViewLanguage] = useState("roman");
 const [fontSize, setFontSize] = useState(24);
 const [isFullscreen, setIsFullscreen] = useState(false);
+  
 
 const [audioSrc, setAudioSrc] = useState("");
 
@@ -151,6 +163,47 @@ if (song.audio !== audioSrc) {
 
 
 };
+
+
+ // FULLSCREEN TOGGLE
+  const toggleFullscreen = () => {
+
+    const elem = containerRef.current;
+
+    if (!document.fullscreenElement) {
+
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+      } else if (elem.webkitRequestFullscreen) {
+        elem.webkitRequestFullscreen();
+      } else if (elem.msRequestFullscreen) {
+        elem.msRequestFullscreen();
+      }
+
+    } else {
+
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+
+    }
+  };
+
+// Detect exit from fullscreen
+  useEffect(() => {
+
+    const handler = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener("fullscreenchange", handler);
+
+    return () => {
+      document.removeEventListener("fullscreenchange", handler);
+    };
+
+  }, []);
+
 
 /* ---------------- Next / Previous ---------------- */
 
@@ -399,8 +452,52 @@ return ( <div style={styles.app}>
 
   )}
 
-</div>
+<div
+      ref={containerRef}
+      style={{
+        padding: "16px",
+        fontFamily: "sans-serif",
+        maxWidth: "800px",
+        margin: "auto"
+      }}
+    >
 
+      {/* Header */}
+      <h2>{song.title}</h2>
+
+      {/* Buttons */}
+      <div style={{ marginBottom: "10px" }}>
+        <button onClick={toggleFullscreen}>
+          {isFullscreen ? "Exit Full" : "Full"}
+        </button>
+      </div>
+
+      {/* Audio Player */}
+      <div style={{ marginBottom: "16px" }}>
+        <audio
+          ref={audioRef}
+          controls
+          src={song.audio}
+          style={{ width: "100%" }}
+        />
+      </div>
+
+      {/* Lyrics */}
+      <div
+        style={{
+          whiteSpace: "pre-line",
+          fontSize: isFullscreen ? "28px" : "18px",
+          lineHeight: "1.7",
+          paddingBottom: "50px"
+        }}
+      >
+        {song.lyrics}
+      </div>
+
+    </div>
+  
+
+</div>
 
 );
 }
