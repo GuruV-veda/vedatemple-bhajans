@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
 import { supabase } from "./supabase";
-import { Analytics } from "@vercel/analytics/next"
 
 function App() {
 
