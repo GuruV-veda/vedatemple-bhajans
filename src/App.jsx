@@ -467,7 +467,21 @@ const styles = {
 app: {
 fontFamily: "Arial",
 padding: "15px",
-paddingBottom: "120px"
+paddingBottom: "120px",
+background: "linear-gradient(180deg,#fff7ed,#fde68a)",
+minHeight: "100vh"
+},
+
+headerBar: {
+display: "flex",
+alignItems: "center",
+justifyContent: "center",
+gap: "12px",
+marginBottom: "15px"
+},
+
+logo: {
+height: "55px"
 },
 
 header: {
@@ -509,14 +523,17 @@ padding: "10px"
 songList: {
 maxHeight: "50vh",
 overflowY: "auto",
-border: "1px solid #ddd",
-padding: "10px"
+border: "1px solid #fde68a",
+padding: "10px",
+borderRadius: "10px",
+background: "white"
 },
 
 songItem: {
-padding: "10px",
-borderBottom: "1px solid #eee",
-cursor: "pointer"
+padding: "12px",
+borderBottom: "1px solid #f3f3f3",
+cursor: "pointer",
+borderRadius: "6px"
 },
 
 languageBar: {
@@ -534,13 +551,15 @@ borderRadius: "20px",
 fontSize: "16px"
 },
 
-lyrics: {
-background: "#5616f5",
-padding: "20px",
-borderRadius: "10px",
-color: "white",
-lineHeight: "1.8",
+lyricsCard: {
+background: "white",
+padding: "22px",
+borderRadius: "14px",
+color: "#333",
+lineHeight: "1.9",
 overflowY: "auto",
+boxShadow: "0 6px 16px rgba(0,0,0,0.15)",
+border: "2px solid #fde68a",
 
 userSelect: "none",
 WebkitUserSelect: "none",
