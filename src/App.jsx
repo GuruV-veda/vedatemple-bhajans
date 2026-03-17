@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { supabase } from "./supabase";
+import { Analytics } from "@vercel/analytics/vue"
 
 function App() {
 
@@ -27,12 +28,12 @@ const [isFullscreen, setIsFullscreen] = useState(false);
 const [audioSrc, setAudioSrc] = useState("");
 
 const langShort = {
-roman: "RO",
-tamil: "TA",
-telugu: "TE",
-kannada: "KA",
-malayalam: "ML",
-devanagari: "HI"
+roman: "ROM",
+tamil: "TAM",
+telugu: "TEL",
+kannada: "KAN",
+malayalam: "MAL",
+devanagari: "SANS"
 };
 
 /* Load Initial Data */
@@ -41,6 +42,25 @@ useEffect(() => {
 fetchSongs();
 fetchDeities();
 fetchPlaylists();
+}, []);
+
+/* Prevent Copy / Right Click */
+useEffect(() => {
+
+  const preventCopy = (e) => {
+    e.preventDefault();
+  };
+
+  document.addEventListener("copy", preventCopy);
+  document.addEventListener("cut", preventCopy);
+  document.addEventListener("contextmenu", preventCopy);
+
+  return () => {
+    document.removeEventListener("copy", preventCopy);
+    document.removeEventListener("cut", preventCopy);
+    document.removeEventListener("contextmenu", preventCopy);
+  };
+
 }, []);
 
 /* Fetch Deities */
@@ -496,7 +516,13 @@ padding: "20px",
 borderRadius: "10px",
 color: "white",
 lineHeight: "1.8",
-overflowY: "auto"
+overflowY: "auto",
+
+userSelect: "none",
+WebkitUserSelect: "none",
+MozUserSelect: "none",
+msUserSelect: "none",
+WebkitTouchCallout: "none"
 },
 
 songNav: {
