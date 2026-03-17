@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { supabase } from "./supabase";
-import { Analytics } from "@vercel/analytics/vue"
+import { Analytics } from "@vercel/analytics/react"
 
 function App() {
 
@@ -430,7 +430,7 @@ style={{ width: "100%" }}
 </div>
 
 )}
-
+<Analytics />
 </div>
 
 );
