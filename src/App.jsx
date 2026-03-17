@@ -189,7 +189,19 @@ return (
 
 <div ref={containerRef} style={styles.app}>
 
+{/* Header with Logo */}
+
+<div style={styles.headerBar}>
+
+<img
+src="/vedalogo.png"
+alt="Vedatemple"
+style={styles.logo}
+/>
+
 <h1 style={styles.header}>Veda Temple Bhajans</h1>
+
+</div>
 
 <div style={isFullscreen ? styles.containerFullscreen : styles.container}>
 
@@ -213,7 +225,6 @@ style={styles.input}
 value={selectedDeity}
 onChange={(e) => setSelectedDeity(e.target.value)}
 style={styles.select}
-
 >
 
 <option value="">Deity</option>
@@ -223,6 +234,7 @@ style={styles.select}
 <option key={d.id} value={d.id}>
 {d.name}
 </option>
+
 ))}
 
 </select>
@@ -231,7 +243,6 @@ style={styles.select}
 value={selectedTag}
 onChange={(e) => setSelectedTag(e.target.value)}
 style={styles.select}
-
 >
 
 <option value="">Tags</option>
@@ -239,6 +250,7 @@ style={styles.select}
 {tags.map((tag) => (
 
 <option key={tag}>{tag}</option>
+
 ))}
 
 </select>
@@ -249,7 +261,6 @@ style={styles.select}
 value={selectedPlaylist}
 onChange={(e) => loadPlaylist(e.target.value)}
 style={styles.select}
-
 >
 
 <option value="">Playlist</option>
@@ -259,6 +270,7 @@ style={styles.select}
 <option key={p.id} value={p.id}>
 {p.name}
 </option>
+
 ))}
 
 </select>
@@ -273,10 +285,11 @@ style={styles.songItem}
 onClick={() => loadSong(song)}
 >
 
-<div>{song.title}</div>
+<div style={{fontWeight:"bold"}}>{song.title}</div>
 
 <small style={{ color: "#888" }}>
-{song.deities?.name} </small>
+{song.deities?.name}
+</small>
 
 </div>
 
@@ -307,13 +320,15 @@ onClick={() => loadSong(song)}
 <div style={styles.languageBar}>
 
 <button
-  onClick={() => {
-    setIsFullscreen(!isFullscreen);
-    if (!isFullscreen) setFontSize(42);
-  }}
-  style={styles.langButton}
+onClick={() => {
+setIsFullscreen(!isFullscreen);
+if (!isFullscreen) setFontSize(42);
+}}
+style={styles.langButton}
 >
-  {isFullscreen ? "Exit Full" : "Full"}
+
+{isFullscreen ? "Exit Full" : "Full"}
+
 </button>
 
 {Object.keys(selectedSong.lyrics || {}).map((lang) => (
@@ -324,11 +339,10 @@ onClick={() => setViewLanguage(lang)}
 style={{
 ...styles.langButton,
 backgroundColor:
-viewLanguage === lang ? "#444" : "#eee",
+viewLanguage === lang ? "#444" : "#ea580c",
 color:
-viewLanguage === lang ? "#fff" : "#000"
+viewLanguage === lang ? "#fff" : "#fff"
 }}
-
 >
 
 {langShort[lang] || lang}
@@ -342,36 +356,40 @@ onClick={() =>
 setFontSize((prev) => Math.max(prev - 2, 16))
 }
 style={styles.langButton}
-
 >
 
-A- </button>
+A-
+
+</button>
 
 <button
 onClick={() =>
 setFontSize((prev) => Math.min(prev + 2, 40))
 }
 style={styles.langButton}
-
 >
 
-A+ </button>
+A+
+
+</button>
 
 </div>
 
+{/* Lyrics Card */}
+
 <div
 style={{
-...styles.lyrics,
+...styles.lyricsCard,
 maxHeight: isFullscreen ? "80vh" : "50vh"
 }}
 >
 
 <pre
-  style={{
-    fontSize: `${fontSize}px`,
-    whiteSpace: "pre-wrap",
-    lineHeight: isFullscreen ? "2.2" : "1.8"
-  }}
+style={{
+fontSize: `${fontSize}px`,
+whiteSpace: "pre-wrap",
+lineHeight: isFullscreen ? "2.2" : "1.8"
+}}
 >
 
 {selectedSong.lyrics?.[viewLanguage] ||
@@ -404,6 +422,7 @@ Next
 {!loading && !selectedSong && (
 
 <p>Select a song to view details.</p>
+
 )}
 
 </div>
@@ -430,13 +449,18 @@ style={{ width: "100%" }}
 </div>
 
 )}
+
 <Analytics />
+
 </div>
 
 );
 }
 
-/* Styles */
+
+
+
+/* Existing _ Styles */
 
 const styles = {
 
