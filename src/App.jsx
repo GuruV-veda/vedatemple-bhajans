@@ -285,9 +285,9 @@ style={styles.songItem}
 onClick={() => loadSong(song)}
 >
 
-<div style={{fontWeight:"bold"}}>{song.title}</div>
+<div style={{fontWeight:"bold", color: "#120ef8" }}>{song.title}</div>
 
-<small style={{ color: "#888" }}>
+<small style={{font:"16px TimesNewRoman", color: "#ce5555", fontStyle: "italic",marginTop: "4px", display: "block" }}>
 {song.deities?.name}
 </small>
 
@@ -486,7 +486,8 @@ height: "55px"
 
 header: {
 textAlign: "center",
-marginBottom: "15px"
+marginBottom: "15px",
+color: "#220cea"
 },
 
 container: {
@@ -504,9 +505,10 @@ sidebar: {},
 content: {},
 
 input: {
-width: "100%",
+width: "90%",
 padding: "10px",
-marginBottom: "10px"
+marginBottom: "20px",
+height: "40px"
 },
 
 filterBar: {
@@ -526,7 +528,7 @@ overflowY: "auto",
 border: "1px solid #fde68a",
 padding: "10px",
 borderRadius: "10px",
-background: "white"
+background:"blue-50",
 },
 
 songItem: {
