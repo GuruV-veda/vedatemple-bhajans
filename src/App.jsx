@@ -35,6 +35,7 @@ kannada: "KAN",
 malayalam: "MAL",
 devanagari: "SANS"
 };
+const lyricsRef = useRef(null);
 
 /* Load Initial Data */
 
@@ -62,6 +63,17 @@ useEffect(() => {
   };
 
 }, []);
+
+/# Scross Lyrics */
+useEffect(() => {
+  if (selectedSong && lyricsRef.current) {
+    lyricsRef.current.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }
+}, [selectedSong]);
+
 
 /* Fetch Deities */
 
@@ -182,6 +194,10 @@ selectedDeity ? song.deity_id === selectedDeity : true
 .filter((song) =>
 selectedTag ? song.tags?.includes(selectedTag) : true
 );
+
+
+
+
 
 /* UI */
 
@@ -378,6 +394,7 @@ A+
 {/* Lyrics Card */}
 
 <div
+ref={lyricsRef}
 style={{
 ...styles.lyricsCard,
 maxHeight: isFullscreen ? "80vh" : "50vh"
